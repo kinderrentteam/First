@@ -1,3 +1,4 @@
+import AdminDashboard from './pages/admin/AdminDashboard';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -8,7 +9,7 @@ import ParentDashboard from './pages/parent/Dashboard';
 export default function AppShell() {
   // --- THE APP'S MEMORY (STATE) ---
   // 1. Is the user still onboarding, or are they ready for the dashboard?
-  const [currentRoute, setCurrentRoute] = useState('onboarding'); 
+  const [currentRoute, setCurrentRoute] = useState('admin'); 
   
   // 2. What specific box did they unlock? (Starts as null)
   const [activeBoxCode, setActiveBoxCode] = useState<string | null>(null);
@@ -26,7 +27,12 @@ export default function AppShell() {
   // --- THE RENDERER (The Traffic Cop) ---
   return (
     <div className="w-full min-h-screen bg-bg-warm overflow-hidden font-sans">
-      <AnimatePresence mode="wait">
+      {currentRoute === 'admin' && (
+  <motion.div key="route-admin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full h-full">
+    <AdminDashboard />
+  </motion.div>
+)}
+<AnimatePresence mode="wait">
         
         {/* Route 1: The Onboarding Gatekeeper */}
         {currentRoute === 'onboarding' && (

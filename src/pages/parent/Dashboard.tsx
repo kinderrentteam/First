@@ -40,7 +40,7 @@ export default function ParentDashboard({ activeBox = 'BTRFL-BOX' }) {
   return (
     <div className="min-h-screen bg-gray-50 pb-24 font-sans relative">
       <header className="px-6 py-8 bg-white rounded-b-3xl shadow-sm mb-6">
-        <h2 className="text-xl font-bold text-blue-600 tracking-wide mb-1">KinderRent</h2>
+        <img src="https://dashboard.kinderrent.com/logo1.png" alt="KinderRent Logo" className="h-8 w-auto object-contain mb-2" />
         <h1 className="text-2xl font-bold text-gray-900">How would you like to play today?</h1>
       </header>
 

@@ -31,9 +31,7 @@ export default function OnboardingGatekeeper({ onSuccessfulScan }: OnboardingGat
           >
             <Lock className="w-10 h-10 text-white" />
           </motion.div>
-          <h1 className="text-4xl font-black text-slate-800 tracking-tight">
-            Kinder<span className="text-brand-pink">Rent</span>
-          </h1>
+          <img src="https://dashboard.kinderrent.com/logo1.png" alt="KinderRent Logo" className="h-16 w-auto object-contain mx-auto" />
           <p className="text-lg text-slate-500 font-bold">Ready for today's adventure? Scan your box code.</p>
         </div>
 
