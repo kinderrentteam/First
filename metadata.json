@@ -1,0 +1,8 @@
+{
+  "name": "KinderRent",
+  "description": "A dual-sided EdTech platform turning homes into rented kindergartens with 3D-printed toys and digital lesson guides.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": []
+}
