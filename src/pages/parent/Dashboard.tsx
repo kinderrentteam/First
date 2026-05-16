@@ -84,7 +84,13 @@ export default function ParentDashboard({ activeBox = 'BTRFL-BOX' }) {
       <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center pb-safe">
         <button className="flex flex-col items-center text-blue-600"><Home size={24} /><span className="text-[10px] font-bold mt-1">Home</span></button>
         <button className="flex flex-col items-center text-gray-400 hover:text-blue-600"><BarChart2 size={24} /><span className="text-[10px] font-bold mt-1">Progress</span></button>
-        <button className="flex flex-col items-center text-gray-400 hover:text-blue-600"><Calendar size={24} /><span className="text-[10px] font-bold mt-1">Plan</span></button>
+       <button 
+  onClick={() => alert("In the real app, this tells AppShell to load the Rental Route!")}
+  className="flex flex-col items-center text-gray-400 hover:text-blue-600"
+>
+  <Calendar size={24} />
+  <span className="text-[10px] font-bold mt-1">Plan</span>
+</button>
         <button className="flex flex-col items-center text-gray-400 hover:text-blue-600"><Settings size={24} /><span className="text-[10px] font-bold mt-1">Settings</span></button>
       </nav>
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import BoxPublisher from './BoxPublisher';
 import { 
   LayoutDashboard, Image as ImageIcon, Package, Users, 
   LogOut, Bell, Search, TrendingUp, Activity, QrCode, ListOrdered 
@@ -180,7 +181,7 @@ export default function AdminDashboard() {
         )}
 
         {/* Placeholders for the other tabs */}
-        {activeTab === 'publisher' && <div className="p-8 bg-white rounded-2xl border border-gray-100 shadow-sm text-center"><h2 className="text-2xl font-bold text-gray-800">Box & QR Publisher goes here!</h2></div>}
+        {activeTab === 'publisher' && <BoxPublisher />}
         {activeTab === 'settings' && <div className="p-8 bg-white rounded-2xl border border-gray-100 shadow-sm text-center"><h2 className="text-2xl font-bold text-gray-800">App UI Settings goes here!</h2></div>}
         {activeTab === 'users' && <div className="p-8 bg-white rounded-2xl border border-gray-100 shadow-sm text-center"><h2 className="text-2xl font-bold text-gray-800">User Management goes here!</h2></div>}
 
