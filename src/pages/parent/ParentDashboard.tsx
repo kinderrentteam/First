@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shapes, Monitor, Home, BarChart2, Calendar, Settings, X, ChevronRight } from 'lucide-react';
-import LessonInterface from './LessonInterface'; // <-- Here is the new connection!
+// Notice we added AlertTriangle to this list!
+import { Shapes, Monitor, Home, BarChart2, Calendar, Settings, X, ChevronRight, AlertTriangle } from 'lucide-react';
+import LessonInterface from './LessonInterface';
+import DamageReporter from './DamageReporter'; 
 
 export default function ParentDashboard({ activeBox = 'BTRFL-BOX' }) {
+  const [showReporter, setShowReporter] = useState(false);
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [waitlistStatus, setWaitlistStatus] = useState('idle');
-  
-  // <-- Here is the state that controls opening the lesson
   const [isLessonOpen, setIsLessonOpen] = useState(false); 
 
   const getLessonDetails = () => {
@@ -45,6 +46,7 @@ export default function ParentDashboard({ activeBox = 'BTRFL-BOX' }) {
       </header>
 
       <main className="px-6 space-y-6">
+        {/* Lesson Card */}
         <motion.div whileHover={{ y: -4 }} className="bg-white rounded-[2rem] p-4 shadow-sm border border-gray-100">
           <div className={`w-full h-40 rounded-[1.5rem] bg-gradient-to-br ${lessonContent.color} flex items-center justify-center mb-4 relative overflow-hidden`}>
             <Shapes size={64} className={`${lessonContent.iconColor} opacity-80`} />
@@ -56,7 +58,6 @@ export default function ParentDashboard({ activeBox = 'BTRFL-BOX' }) {
             <h3 className="text-xl font-bold text-gray-900 mb-1">{lessonContent.title}</h3>
             <p className="text-sm text-gray-500 mb-4">{lessonContent.subtitle}</p>
             
-            {/* <-- This button now triggers the lesson! */}
             <button 
               onClick={() => setIsLessonOpen(true)}
               className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
@@ -66,6 +67,7 @@ export default function ParentDashboard({ activeBox = 'BTRFL-BOX' }) {
           </div>
         </motion.div>
 
+        {/* Live Class Card */}
         <motion.div className="bg-white/60 rounded-[2rem] p-4 border border-gray-200 relative">
           <div className="absolute -top-3 right-6 bg-amber-400 text-amber-900 text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-md z-10">✨ Coming Soon</div>
           <div className="w-full h-32 rounded-[1.5rem] bg-gradient-to-br from-teal-100 to-blue-100 flex items-center justify-center mb-4 opacity-75">
@@ -79,22 +81,31 @@ export default function ParentDashboard({ activeBox = 'BTRFL-BOX' }) {
             </button>
           </div>
         </motion.div>
+
+        {/* --- HERE IS YOUR NEW REPORT BUTTON --- */}
+        <button 
+          onClick={() => setShowReporter(true)}
+          className="w-full bg-orange-50 border border-orange-100 text-orange-700 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-orange-100 transition-colors"
+        >
+          <AlertTriangle size={20} /> Report a Damaged Toy
+        </button>
+
       </main>
 
       <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center pb-safe">
         <button className="flex flex-col items-center text-blue-600"><Home size={24} /><span className="text-[10px] font-bold mt-1">Home</span></button>
         <button className="flex flex-col items-center text-gray-400 hover:text-blue-600"><BarChart2 size={24} /><span className="text-[10px] font-bold mt-1">Progress</span></button>
-       <button 
-  onClick={() => alert("In the real app, this tells AppShell to load the Rental Route!")}
-  className="flex flex-col items-center text-gray-400 hover:text-blue-600"
->
-  <Calendar size={24} />
-  <span className="text-[10px] font-bold mt-1">Plan</span>
-</button>
+        <button 
+          onClick={() => alert("In the real app, this tells AppShell to load the Rental Route!")}
+          className="flex flex-col items-center text-gray-400 hover:text-blue-600"
+        >
+          <Calendar size={24} />
+          <span className="text-[10px] font-bold mt-1">Plan</span>
+        </button>
         <button className="flex flex-col items-center text-gray-400 hover:text-blue-600"><Settings size={24} /><span className="text-[10px] font-bold mt-1">Settings</span></button>
       </nav>
 
-      {/* --- WAITLIST MODAL --- */}
+      {/* Waitlist Modal */}
       <AnimatePresence>
         {isWaitlistOpen && (
            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -129,11 +140,16 @@ export default function ParentDashboard({ activeBox = 'BTRFL-BOX' }) {
         )}
       </AnimatePresence>
 
-      {/* --- THE LESSON INTERFACE --- */}
-      {/* If the button is clicked, this renders your beautiful step-by-step guide over the screen! */}
+      {/* Lesson Interface Overlay */}
       <AnimatePresence>
         {isLessonOpen && <LessonInterface onClose={() => setIsLessonOpen(false)} />}
       </AnimatePresence>
+
+      {/* --- HERE IS YOUR NEW DAMAGE REPORTER OVERLAY --- */}
+      <AnimatePresence>
+        {showReporter && <DamageReporter onClose={() => setShowReporter(false)} />}
+      </AnimatePresence>
+
     </div>
   );
 }

@@ -1,8 +1,15 @@
+import SubscriberCRM from './SubscriberCRM';
+import AssessmentEditor from './AssessmentEditor';
+import AdminUsers from './AdminUsers';
+import DamageTriage from './DamageTriage';
 import React, { useState } from 'react';
+import AdminOverview from './AdminOverview';
 import BoxPublisher from './BoxPublisher';
+import AdminSettings from './AdminSettings';
 import { 
   LayoutDashboard, Image as ImageIcon, Package, Users, 
-  LogOut, Bell, Search, TrendingUp, Activity, QrCode, ListOrdered 
+  LogOut, Bell, Search, Activity, QrCode, AlertTriangle,
+  Settings 
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -31,6 +38,18 @@ export default function AdminDashboard() {
             <Activity size={18} /> Command Center
           </button>
           <button 
+            onClick={() => setActiveTab('crm')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${activeTab === 'crm' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
+          >
+            <Users size={18} /> Subscriber CRM
+          </button>
+          <button 
+            onClick={() => setActiveTab('assessment')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${activeTab === 'assessment' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
+          >
+            <Settings size={18} /> Assessment Engine
+          </button>
+          <button 
             onClick={() => setActiveTab('publisher')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors ${activeTab === 'publisher' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
           >
@@ -48,6 +67,13 @@ export default function AdminDashboard() {
           >
             <Users size={18} /> Waitlist & Users
           </button>
+          <button 
+  onClick={() => setActiveTab('damage')}
+  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-colors ${activeTab === 'damage' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
+>
+  <div className="flex items-center gap-3"><AlertTriangle size={18} /> Damage Control</div>
+  <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">2</span>
+</button>
         </nav>
 
         <div className="p-4 border-t border-gray-100">
@@ -63,8 +89,8 @@ export default function AdminDashboard() {
         {/* Header */}
         <header className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Welcome back, Admin.</h1>
-            <p className="text-gray-500">Here is what is happening in KinderRent today.</p>
+            <h1 className="text-2xl font-bold text-gray-900">Welcome back, CEO.</h1>
+            <p className="text-gray-500">Your KinderRent operations at a glance.</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -85,106 +111,14 @@ export default function AdminDashboard() {
           </div>
         </header>
 
-        {/* --- THE COMMAND CENTER VIEW --- */}
-        {activeTab === 'dashboard' && (
-          <div className="space-y-6">
-            
-            {/* Key Metrics Row */}
-            <div className="grid grid-cols-4 gap-6">
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="flex items-center gap-3 mb-2 text-blue-600"><Users size={20} /><span className="font-semibold text-gray-700">Active Parents</span></div>
-                <div className="text-3xl font-bold text-gray-900 mb-1">1,248</div>
-                <div className="text-sm text-green-600 flex items-center gap-1"><TrendingUp size={14} /> +12% this week</div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="flex items-center gap-3 mb-2 text-orange-500"><ListOrdered size={20} /><span className="font-semibold text-gray-700">Class Waitlist</span></div>
-                <div className="text-3xl font-bold text-gray-900 mb-1">342</div>
-                <div className="text-sm text-green-600 flex items-center gap-1"><TrendingUp size={14} /> +45 today</div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="flex items-center gap-3 mb-2 text-purple-600"><Package size={20} /><span className="font-semibold text-gray-700">Live Boxes</span></div>
-                <div className="text-3xl font-bold text-gray-900 mb-1">14</div>
-                <div className="text-sm text-gray-500">All systems go</div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="flex items-center gap-3 mb-2 text-teal-600"><Activity size={20} /><span className="font-semibold text-gray-700">Worksheets</span></div>
-                <div className="text-3xl font-bold text-gray-900 mb-1">892</div>
-                <div className="text-sm text-gray-500">Uploaded today</div>
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <h2 className="text-lg font-bold text-gray-900 mt-8 mb-4">Quick Tools</h2>
-            <div className="grid grid-cols-3 gap-6">
-              <button onClick={() => setActiveTab('publisher')} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-left group">
-                <div className="bg-blue-50 text-blue-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors"><QrCode size={24} /></div>
-                <h3 className="font-bold text-gray-900 mb-1">Box Publisher</h3>
-                <p className="text-sm text-gray-500">Upload lessons & generate QR codes.</p>
-              </button>
-              <button onClick={() => setActiveTab('settings')} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-left group">
-                <div className="bg-purple-50 text-purple-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors"><ImageIcon size={24} /></div>
-                <h3 className="font-bold text-gray-900 mb-1">App UI Settings</h3>
-                <p className="text-sm text-gray-500">Change dashboard art & text.</p>
-              </button>
-              <button onClick={() => setActiveTab('users')} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-left group">
-                <div className="bg-orange-50 text-orange-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-600 group-hover:text-white transition-colors"><Users size={24} /></div>
-                <h3 className="font-bold text-gray-900 mb-1">Manage Users</h3>
-                <p className="text-sm text-gray-500">Approve live class attendees.</p>
-              </button>
-            </div>
-
-            {/* Waitlist Table */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mt-8">
-              <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                <h2 className="text-lg font-bold text-gray-900">Recent Waitlist Signups</h2>
-                <button className="text-sm text-blue-600 font-semibold hover:underline">View All</button>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-gray-50 text-gray-500">
-                    <tr>
-                      <th className="px-6 py-4 font-medium">Parent Email</th>
-                      <th className="px-6 py-4 font-medium">Child</th>
-                      <th className="px-6 py-4 font-medium">Age</th>
-                      <th className="px-6 py-4 font-medium">Current Box Inventory</th>
-                      <th className="px-6 py-4 font-medium">Time</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    <tr className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-gray-900">sarah@example.com</td>
-                      <td className="px-6 py-4 text-gray-600">Leo</td>
-                      <td className="px-6 py-4 text-gray-600">3 yrs</td>
-                      <td className="px-6 py-4"><span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-bold border border-blue-100">🦋 Box: Geo Butterfly</span></td>
-                      <td className="px-6 py-4 text-gray-400">10 mins ago</td>
-                    </tr>
-                    <tr className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-gray-900">murat.y@example.com</td>
-                      <td className="px-6 py-4 text-gray-600">Aylin</td>
-                      <td className="px-6 py-4 text-gray-600">4 yrs</td>
-                      <td className="px-6 py-4"><span className="bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-xs font-bold border border-orange-100">🧱 Box: Stacking Blocks</span></td>
-                      <td className="px-6 py-4 text-gray-400">25 mins ago</td>
-                    </tr>
-                    <tr className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-gray-900">emily.r@example.com</td>
-                      <td className="px-6 py-4 text-gray-600">Sam</td>
-                      <td className="px-6 py-4 text-gray-600">2 yrs</td>
-                      <td className="px-6 py-4"><span className="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-bold border border-purple-100">🎵 Box: Music Makers</span></td>
-                      <td className="px-6 py-4 text-gray-400">1 hour ago</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-          </div>
-        )}
-
-        {/* Placeholders for the other tabs */}
+        {/* --- DYNAMIC TAB ROUTING --- */}
+        {activeTab === 'dashboard' && <AdminOverview />}
         {activeTab === 'publisher' && <BoxPublisher />}
-        {activeTab === 'settings' && <div className="p-8 bg-white rounded-2xl border border-gray-100 shadow-sm text-center"><h2 className="text-2xl font-bold text-gray-800">App UI Settings goes here!</h2></div>}
-        {activeTab === 'users' && <div className="p-8 bg-white rounded-2xl border border-gray-100 shadow-sm text-center"><h2 className="text-2xl font-bold text-gray-800">User Management goes here!</h2></div>}
-
+        {activeTab === 'settings' && <AdminSettings />}
+        {activeTab === 'users' && <AdminUsers />}
+        {activeTab === 'damage' && <DamageTriage />}
+{activeTab === 'assessment' && <AssessmentEditor />}
+{activeTab === 'crm' && <SubscriberCRM />}
       </main>
     </div>
   );

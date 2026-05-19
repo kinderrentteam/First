@@ -1,84 +1,97 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { QrCode, Lock, ChevronRight } from 'lucide-react';
+import { QrCode, Calendar, CheckCircle2, ArrowRight, Camera, Info, RefreshCw } from 'lucide-react';
 
-interface OnboardingGatekeeperProps {
-  onSuccessfulScan: (code: string) => void;
-}
+export default function OnboardingGatekeeper({ onSuccessfulScan }) {
+  // DEV TOGGLE: Change this to 'buyer' to see the QR Scanner, or 'renter' to see the Rental Rules.
+  // In your final app, this will automatically pull from their database profile!
+  const [userType, setUserType] = useState('renter'); 
 
-export default function OnboardingGatekeeper({ onSuccessfulScan }: OnboardingGatekeeperProps) {
-  const [code, setCode] = useState('');
+  const handleSimulateQRScan = () => {
+    // Buyers unlock via physical code
+    onSuccessfulScan('KNDR-BUYER-123');
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (code.length === 5) {
-      onSuccessfulScan(code);
-    }
+  const handleRenterEnterDashboard = () => {
+    // Renters bypass the QR code and go straight to the dashboard (which will be locked by Admin)
+    onSuccessfulScan('KNDR-RENTER-AUTO');
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-bg-warm">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md space-y-8"
-      >
-        <div className="text-center space-y-4">
-          <motion.div 
-            animate={{ rotate: [3, -3, 3] }}
-            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            className="inline-block p-5 gradient-pink rounded-[2rem] shadow-xl shadow-brand-pink/20 mb-2"
-          >
-            <Lock className="w-10 h-10 text-white" />
-          </motion.div>
-          <img src="https://dashboard.kinderrent.com/logo1.png" alt="KinderRent Logo" className="h-16 w-auto object-contain mx-auto" />
-          <p className="text-lg text-slate-500 font-bold">Ready for today's adventure? Scan your box code.</p>
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans p-6">
+      
+      {/* DEV TESTING TOGGLE - You can remove this before launch! */}
+      <div className="bg-white border-2 border-dashed border-purple-300 p-4 rounded-xl mb-8 flex items-center justify-between shadow-sm">
+        <span className="text-xs font-bold text-purple-600 uppercase tracking-widest flex items-center gap-2"><RefreshCw size={14}/> Test Mode</span>
+        <div className="flex bg-gray-100 rounded-lg p-1">
+          <button onClick={() => setUserType('renter')} className={`px-4 py-1.5 text-xs font-bold rounded-md ${userType === 'renter' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}>Simulate Renter</button>
+          <button onClick={() => setUserType('buyer')} className={`px-4 py-1.5 text-xs font-bold rounded-md ${userType === 'buyer' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}>Simulate Buyer</button>
         </div>
+      </div>
 
-        <div className="glass-card p-10 space-y-6">
-          <button 
-            onClick={() => onSuccessfulScan('BTRFL-BOX')} // For demo purposes, clicking scan "unlocks" a box
-            className="w-full py-8 flex flex-col items-center justify-center gap-3 border-4 border-dashed border-slate-200/50 rounded-[2.5rem] hover:border-brand-pink/30 hover:bg-white/40 transition-all group"
-          >
-            <QrCode className="w-12 h-12 text-slate-300 group-hover:text-brand-pink" />
-            <span className="font-black text-slate-400 group-hover:text-brand-pink uppercase tracking-widest text-xs">Scan Box QR Code</span>
-          </button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t-2 border-slate-100" />
+      <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
+        
+        {/* ========================================== */}
+        {/* SCENARIO A: THE BUYER (QR CODE REQUIRED)   */}
+        {/* ========================================== */}
+        {userType === 'buyer' && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <div className="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mb-6">
+              <QrCode size={40} className="text-blue-600" />
             </div>
-            <div className="relative flex justify-center text-[10px] uppercase">
-              <span className="bg-white/0 px-4 text-slate-400 font-black tracking-widest">OR</span>
+            <h1 className="text-3xl font-black text-gray-900 leading-tight">Unlock Your Box</h1>
+            <p className="text-gray-600 font-medium text-lg leading-relaxed">
+              Find the physical QR code printed on the welcome card inside your box. Scan it to permanently unlock your digital curriculum.
+            </p>
+            
+            <div className="bg-white p-8 rounded-[2rem] border-2 border-dashed border-gray-300 text-center my-8">
+              <Camera size={48} className="text-gray-300 mx-auto mb-4" />
+              <p className="font-bold text-gray-500">Camera ready for scanning...</p>
             </div>
-          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <input 
-              type="text" 
-              maxLength={5}
-              placeholder="SECRET CODE"
-              value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              className="w-full text-center text-4xl tracking-[0.4em] font-display font-black py-5 rounded-[2rem] bg-white/50 border-4 border-white focus:border-brand-pink/20 outline-none transition-all placeholder:text-slate-200 placeholder:tracking-widest placeholder:text-lg"
-            />
-            <button 
-              type="submit"
-              disabled={code.length < 5}
-              className="w-full py-5 gradient-pink disabled:opacity-50 disabled:shadow-none text-white font-black text-xl rounded-[2rem] shadow-2xl shadow-brand-pink/30 flex items-center justify-center gap-3 bouncy-hover group"
-            >
-              Unlock Box
-              <motion.div animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-                <ChevronRight className="w-6 h-6" strokeWidth={3} />
-              </motion.div>
+            <button onClick={handleSimulateQRScan} className="w-full bg-gray-900 text-white font-bold text-lg py-5 rounded-2xl flex items-center justify-center gap-3 hover:bg-black transition-colors shadow-xl">
+              Simulate Successful Scan <ArrowRight size={20} />
             </button>
-          </form>
-        </div>
+          </motion.div>
+        )}
 
-        <p className="text-center text-slate-400 text-sm font-bold uppercase tracking-widest pt-4">
-          Need a box? <a href="#" className="text-brand-pink hover:underline">Explore Shop</a>
-        </p>
-      </motion.div>
+        {/* ========================================== */}
+        {/* SCENARIO B: THE RENTER (MONTHLY RULES)     */}
+        {/* ========================================== */}
+        {userType === 'renter' && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mb-6">
+              <Calendar size={40} className="text-green-600" />
+            </div>
+            <h1 className="text-3xl font-black text-gray-900 leading-tight">Your Rental Cycle</h1>
+            <p className="text-gray-600 font-medium text-lg leading-relaxed">
+              As a subscriber, you don't need a QR code! Here is how your monthly box rotation works:
+            </p>
+            
+            <div className="bg-white p-6 rounded-[2rem] border border-gray-200 shadow-sm space-y-6 my-6">
+               <div className="flex items-start gap-4">
+                 <div className="bg-green-50 text-green-600 p-3 rounded-xl shrink-0"><CheckCircle2 size={24}/></div>
+                 <div>
+                   <h3 className="font-black text-gray-900">1st of the Month</h3>
+                   <p className="text-sm text-gray-500 font-medium mt-1">Your new box arrives and your digital curriculum automatically unlocks.</p>
+                 </div>
+               </div>
+               <div className="flex items-start gap-4">
+                 <div className="bg-amber-50 text-amber-600 p-3 rounded-xl shrink-0"><Info size={24}/></div>
+                 <div>
+                   <h3 className="font-black text-gray-900">28th of the Month</h3>
+                   <p className="text-sm text-gray-500 font-medium mt-1">Pack up the non-consumable toys and prepare for courier pickup.</p>
+                 </div>
+               </div>
+            </div>
+
+            <button onClick={handleRenterEnterDashboard} className="w-full bg-green-600 text-white font-bold text-lg py-5 rounded-2xl flex items-center justify-center gap-3 hover:bg-green-700 transition-colors shadow-xl shadow-green-200">
+              Enter Dashboard <ArrowRight size={20} />
+            </button>
+          </motion.div>
+        )}
+
+      </div>
     </div>
   );
 }

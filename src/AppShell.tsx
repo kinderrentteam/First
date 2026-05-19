@@ -1,65 +1,75 @@
-import ProgressRewards from './pages/parent/ProgressRewards';
-import RentalSubscriptionPage from './pages/parent/RentalSubscriptionPage';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Imports
+// --- IMPORTS ---
 import AdminDashboard from './pages/admin/AdminDashboard';
-import BoxDiscoveryFlow from './pages/parent/BoxDiscoveryFlow';
+import AuthScreen from './pages/parent/AuthScreen';
+import PersonalizedStorefront from './pages/parent/PersonalizedStorefront';
 import OrderTrackingDashboard from './pages/parent/OrderTrackingDashboard';
 import OnboardingGatekeeper from './pages/parent/OnboardingGatekeeper';
-import ParentDashboard from './pages/parent/Dashboard';
+import ParentDashboard from './pages/parent/ParentDashboard'; 
+import ProgressRewards from './pages/parent/ProgressRewards';
 
 export default function AppShell() {
   // --- THE APP'S MEMORY (STATE) ---
-  // Start the user at the Discovery flow
-  const [currentRoute, setCurrentRoute] = useState('admin');
-  const [activeBoxCode, setActiveBoxCode] = useState<string | null>(null);
+  // We start at the absolute beginning: The Auth Screen
+const [currentRoute, setCurrentRoute] = useState('auth');
+  const [activeBoxCode, setActiveBoxCode] = useState(null);
 
   // --- THE WIRING (ROUTING FUNCTIONS) ---
   
-  // 1. When they finish checkout in Discovery
-  const handlePurchaseComplete = (boxId: string) => {
-    // We know what box they bought, but it's not "Unlocked" yet.
-    // Send them to the waiting room!
+  // 0. After they log in, check their role!
+  const handleLoginSuccess = (role) => {
+    if (role === 'admin') {
+      setCurrentRoute('admin'); // Send admin to the command center
+    } else {
+      setCurrentRoute('discovery'); // Send parent to the storefront
+    }
+  };
+
+  // 1. After they buy the box, send them to the waiting room!
+  const handlePurchaseComplete = (boxId) => {
     setCurrentRoute('tracking'); 
   };
 
-  // 2. When they click "I have my box" in the Tracking screen
+  // 2. When the courier arrives and they tap "I have my box", open the scanner!
   const handleBoxArrived = () => {
-    setCurrentRoute('onboarding'); // Send to scanner
+    setCurrentRoute('onboarding'); 
   };
 
-  // 3. When they successfully scan the QR code
-  const handleBoxUnlock = (boxCode: string) => {
+  // 3. When the camera successfully scans the QR code, unlock the dashboard!
+  const handleBoxUnlock = (boxCode) => {
     setActiveBoxCode(boxCode);    
-    setCurrentRoute('dashboard'); // Finally, give them the lessons!
+    setCurrentRoute('dashboard'); 
   };
 
   // --- THE RENDERER ---
   return (
-    <div className="w-full min-h-screen bg-bg-warm overflow-hidden font-sans">
+    <div className="w-full min-h-screen bg-gray-50 overflow-hidden font-sans">
       <AnimatePresence mode="wait">
         
-        {/* Route: Admin (Hidden for now, change initial state to 'admin' to see) */}
+        {/* Route: Admin (Change initial state to 'admin' to see this again) */}
         {currentRoute === 'admin' && (
           <motion.div key="route-admin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full h-full">
             <AdminDashboard />
           </motion.div>
         )}
 
-        {/* Route 1: Discovery & Add to Cart */}
-        {currentRoute === 'discovery' && (
-          <motion.div key="route-discovery" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -100 }} className="w-full h-full bg-white z-50">
-            <BoxDiscoveryFlow onPurchaseComplete={handlePurchaseComplete} />
+        {/* Route 0: The Front Door (Sign Up) */}
+        {currentRoute === 'auth' && (
+          <motion.div key="route-auth" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full h-full bg-white z-50">
+            <AuthScreen onLoginSuccess={handleLoginSuccess} />
           </motion.div>
         )}
-        {currentRoute === 'progress' && (
-  <motion.div key="route-progress" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full h-full bg-white z-50">
-    <ProgressRewards />
+
+        {/* Route 1: Discovery & Add to Cart */}
+{currentRoute === 'discovery' && (
+  <motion.div key="route-discovery" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -100 }} className="w-full h-full bg-white z-50">
+    <PersonalizedStorefront onPurchaseComplete={handlePurchaseComplete} />
   </motion.div>
 )}
-        {/* Route 2: Post-Purchase Order Tracking & Blogs */}
+
+        {/* Route 2: Post-Purchase Order Tracking */}
         {currentRoute === 'tracking' && (
           <motion.div key="route-tracking" initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -100 }} className="w-full h-full">
             <OrderTrackingDashboard onBoxArrived={handleBoxArrived} />
@@ -76,7 +86,14 @@ export default function AppShell() {
         {/* Route 4: The Final Parent Dashboard with Lessons unlocked */}
         {currentRoute === 'dashboard' && (
           <motion.div key="route-dashboard" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} className="w-full h-full">
-            <ParentDashboard activeBox={activeBoxCode || undefined} /> 
+            <ParentDashboard activeBox={activeBoxCode} /> 
+          </motion.div>
+        )}
+
+        {/* Hidden Route: Progress Rewards */}
+        {currentRoute === 'progress' && (
+          <motion.div key="route-progress" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full h-full bg-white z-50">
+            <ProgressRewards />
           </motion.div>
         )}
 
